@@ -1,0 +1,11 @@
+.DS_Store
+.idea/
+webshopapi/target/
+webshopapi/src/main/resources/application-local.yml
+webshopapi/src/main/resources/application-local.yaml
+webshop-frontend/node_modules/
+webshop-frontend/.env
+webshop-frontend/.env*
+webshop-frontend/.env.*
+webshop-frontend/dist/
+webshop-frontend/build/
