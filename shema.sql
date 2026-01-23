@@ -8,9 +8,13 @@ CREATE TABLE product (
     price DOUBLE
 );
 
+ALTER TABLE product
+ADD COLUMN image_url VARCHAR(500);
+
 CREATE TABLE cart (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
     quantity INT NOT NULL,
     FOREIGN KEY (product_id) REFERENCES Product(id)
 );
+
