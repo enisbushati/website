@@ -2,7 +2,7 @@ spring:
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/webshop?serverTimezone=UTC}
     username: ${DB_USER:root}
-    password: ${DB_PASSWORD:}
+    password: ${DB_PASSWORD:DawoodMoosa4977}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
