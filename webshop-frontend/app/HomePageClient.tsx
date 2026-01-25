@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ShoppingCart, Heart, User, Search } from "lucide-react";
@@ -10,9 +11,9 @@ type Product = {
     price: number;
     imageUrl?: string;
 };
+type BasketItem = Product & { quantity: number };
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
-
 function buildImageSrc(imageUrl?: string) {
     if (!imageUrl) return "";
 
@@ -101,7 +102,7 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
 
 export default function HomePageClient() {
     const [products, setProducts] = useState<Product[]>([]);
-    const [basket, setBasket] = useState<Product[]>([]);
+    const [basket, setBasket] = useState<BasketItem[]>([]);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -115,12 +116,45 @@ export default function HomePageClient() {
     }, []);
 
     function addToBasket(product: Product) {
-        setBasket((prev) => [...prev, product]);
+  setBasket((prev) => {
+    const found = prev.find((p) => p.id === product.id);
+
+    if (found) {
+      return prev.map((p) =>
+        p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+      );
     }
 
-    function removeFromBasket(index: number) {
-        setBasket((prev) => prev.filter((_, i) => i !== index));
-    }
+    return [...prev, { ...product, quantity: 1 }];
+  });
+}
+
+
+    function increaseQty(id: number) {
+  setBasket((prev) =>
+    prev.map((item) =>
+      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+    )
+  );
+}
+
+function decreaseQty(id: number) {
+  setBasket((prev) =>
+    prev
+      .map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+      )
+      .filter((item) => item.quantity > 0)
+  );
+}
+const [pressed, setPressed] = useState<string | null>(null);
+
+function press(key: string) {
+  setPressed(key);
+  window.setTimeout(() => setPressed(null), 120);
+}
+
+
 
     if (error) return <h1>❌ {error}</h1>;
 
@@ -148,31 +182,77 @@ export default function HomePageClient() {
                 <h2>🛒 Basket</h2>
 
                 {basket.length === 0 && <p>Basket is empty</p>}
-                {basket.map((item, index) => (
-                    <div key={index} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                        <span>
-                            {item.name} – {item.price} €
-                        </span>
-                        <button
-                            onClick={() => removeFromBasket(index)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                fontSize: "12px",
-                                padding: 0,
-                            }}
-                            aria-label="Remove from basket"
-                        >
-                            x
-                        </button>
-                    </div>
-                ))}
+{basket.map((item) => (
+  <div
+    key={item.id}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      marginBottom: "8px",
+    }}
+  >
+    {/* LEFT side: text takes full width so buttons align */}
+    <span style={{ minWidth: "240px" }}>
+      {item.name} – {item.price} € x {item.quantity}
+    </span>
+
+    {/* RIGHT side: fixed button area */}
+    <div
+      style={{
+        display: "flex",
+        gap: "6px",
+        marginLeft: "12px", // ✅ moves buttons a bit to the RIGHT
+      }}
+    >
+      <button
+  onClick={() => {
+    increaseQty(item.id);
+    press(`plus-${item.id}`);
+  }}
+  style={{
+    width: "26px",
+    height: "26px",
+    border: "1px solid #999",
+    background: "#fff",
+    cursor: "pointer",
+    fontWeight: "bold",
+    borderRadius: "4px",
+    transition: "transform 120ms ease, background 120ms ease",
+    transform: pressed === `plus-${item.id}` ? "scale(0.92)" : "scale(1)",
+    backgroundColor: pressed === `plus-${item.id}` ? "#f2f2f2" : "#fff",
+  }}
+>
+  +
+</button>
+      <button
+  onClick={() => {
+    decreaseQty(item.id);
+    press(`minus-${item.id}`);
+  }}
+  style={{
+    width: "26px",
+    height: "26px",
+    border: "1px solid #999",
+    background: "#fff",
+    cursor: "pointer",
+    fontWeight: "bold",
+    borderRadius: "4px",
+    transition: "transform 120ms ease, background 120ms ease",
+    transform: pressed === `minus-${item.id}` ? "scale(0.92)" : "scale(1)",
+    backgroundColor: pressed === `minus-${item.id}` ? "#f2f2f2" : "#fff",
+  }}
+>
+  −
+</button>
+    </div>
+  </div>
+))}
+
 
                 {basket.length > 0 && (
                     <>
                         <hr />
-                        <strong>Total: {basket.reduce((sum, item) => sum + item.price, 0)} €</strong>
+                        <strong>Total: {basket.reduce((sum, item) => sum + item.price * item.quantity, 0)} €</strong>
                     </>
                 )}
             </div>
