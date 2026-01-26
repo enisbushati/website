@@ -7,6 +7,17 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # 👈 IMPORTANT (not create)
+      ddl-auto: update
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
+
+  web:
+    resources:
+      static-locations: file:/Users/utbnadham10/website/webshopapi/uploads/
+
+  mvc:
+    static-path-pattern: /uploads/**
+
+app:
+  upload-dir: /Users/utbnadahm10/website/webshopapi/uploads
+
