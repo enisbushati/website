@@ -99,7 +99,23 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
             <p style={{ margin: "0 0 6px 0", opacity: 0.85 }}>{p.category}</p>
             <strong>{p.price} €</strong>
             <br />
-            <button onClick={() => onAdd(p)} style={{ marginTop: "8px" }}>
+            <button
+        onClick={() => onAdd(p)}
+        style={{
+        marginTop: "10px",
+        width: "100%",
+        padding: "12px",
+        backgroundColor: "#4CAF50",
+        color: "white",
+        border: "none",
+        borderRadius: "10px",
+        fontWeight: "bold",
+        fontSize: "15px",
+      cursor: "pointer",
+  }}
+>
+  
+
                 Add to basket
             </button>
         </div>
