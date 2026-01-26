@@ -15,21 +15,27 @@ type BasketItem = Product & { quantity: number };
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 function buildImageSrc(imageUrl?: string) {
-    if (!imageUrl) return "";
+  if (!imageUrl) return "";
 
-    // absolute URL from backend
-    if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-        return encodeURI(imageUrl);
-    }
+  // absolute URL from backend
+  if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+    return encodeURI(imageUrl);
+  }
 
-    // backend returns full path like /uploads/abc.png
-    if (imageUrl.startsWith("/")) {
-        return `${API_BASE}${encodeURI(imageUrl)}`;
-    }
+  // backend returns path like /uploads/abc.png
+  if (imageUrl.startsWith("/uploads/")) {
+    return `${API_BASE}/api${encodeURI(imageUrl)}`;
+  }
 
-    // backend returns only filename like abc.png -> assume /uploads/
-    return `${API_BASE}/uploads/${encodeURIComponent(imageUrl)}`;
+  // other absolute paths
+  if (imageUrl.startsWith("/")) {
+    return `${API_BASE}${encodeURI(imageUrl)}`;
+  }
+
+  // backend returns only filename like abc.png
+  return `${API_BASE}/api/uploads/${encodeURIComponent(imageUrl)}`;
 }
+
 
 
 function getImageFileName(imageUrl?: string) {
