@@ -1,82 +1,51 @@
 package edu.jensen.webshopapi.controller;
 
-import edu.jensen.webshopapi.dto.cart.AddCartItemRequest;
-import edu.jensen.webshopapi.dto.cart.Cart;
-import edu.jensen.webshopapi.dto.cart.CartItem;
-import edu.jensen.webshopapi.entity.Product;
-import edu.jensen.webshopapi.repository.ProductRepository;
-import jakarta.servlet.http.HttpSession;
+import edu.jensen.webshopapi.dto.*;
+import edu.jensen.webshopapi.service.CartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
 
-    private final ProductRepository productRepository;
+    private final CartService cartService;
 
-    public CartController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public CartController(CartService cartService) {
+        this.cartService = cartService;
     }
 
-    private Cart getOrCreateCart(HttpSession session) {
-        Cart cart = (Cart) session.getAttribute("CART");
-        if (cart == null) {
-            cart = new Cart();
-            session.setAttribute("CART", cart);
-        }
-        return cart;
+    // Change this method to match your auth/user setup
+    private Long getUserId(Principal principal) {
+    return 1L;   // TEMPORARY: always user id = 1
     }
+
 
     @GetMapping
-    public ResponseEntity<Cart> getCart(HttpSession session) {
-        return ResponseEntity.ok(getOrCreateCart(session));
+    public CartResponse getCart(Principal principal) {
+        return cartService.getCart(getUserId(principal));
     }
 
     @PostMapping("/items")
-    public ResponseEntity<Cart> addItem(@RequestBody AddCartItemRequest req, HttpSession session) {
-        if (req.getProductId() == null || req.getQuantity() <= 0) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Product product = productRepository.findById(req.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
-
-        Cart cart = getOrCreateCart(session);
-
-        Optional<CartItem> existing = cart.getItems().stream()
-                .filter(i -> i.getProductId().equals(req.getProductId()))
-                .findFirst();
-
-        if (existing.isPresent()) {
-            CartItem item = existing.get();
-            item.setQuantity(item.getQuantity() + req.getQuantity());
-        } else {
-            cart.getItems().add(new CartItem(
-                    product.getId(),
-                    product.getName(),
-                    product.getPrice(),
-                    req.getQuantity()
-            ));
-        }
-
-        session.setAttribute("CART", cart);
-        return ResponseEntity.ok(cart);
+    public ResponseEntity<CartResponse> addItem(Principal principal, @RequestBody AddCartItemRequest req) {
+        return ResponseEntity.ok(cartService.addItem(getUserId(principal), req));
     }
 
-    @DeleteMapping("/items/{productId}")
-    public ResponseEntity<Cart> removeItem(@PathVariable Long productId, HttpSession session) {
-        Cart cart = getOrCreateCart(session);
-        cart.getItems().removeIf(i -> i.getProductId().equals(productId));
-        session.setAttribute("CART", cart);
-        return ResponseEntity.ok(cart);
+    @PatchMapping("/items/{itemId}")
+    public CartResponse updateQty(Principal principal, @PathVariable Long itemId, @RequestBody UpdateQuantityRequest req) {
+        return cartService.updateQuantity(getUserId(principal), itemId, req);
+    }
+
+    @DeleteMapping("/items/{itemId}")
+    public CartResponse removeItem(Principal principal, @PathVariable Long itemId) {
+        return cartService.removeItem(getUserId(principal), itemId);
     }
 
     @DeleteMapping
-    public ResponseEntity<Cart> clearCart(HttpSession session) {
-        session.removeAttribute("CART");
-        return ResponseEntity.ok(new Cart());
+    public ResponseEntity<Void> clear(Principal principal) {
+        cartService.clearCart(getUserId(principal));
+        return ResponseEntity.noContent().build();
     }
 }
