@@ -1,22 +1,12 @@
 spring:
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/webshop?serverTimezone=UTC}
-    username: ${DB_USER:root}
-    password: ${DB_PASSWORD:DawoodMoosa4977}
+    url: jdbc:mysql://localhost:3306/webshop?serverTimezone=UTC
+    username: root
+    password: DawoodMoosa4977
     driver-class-name: com.mysql.cj.jdbc.Driver
-
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update   # 👈 IMPORTANT (not create)
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
-
-  web:
-    resources:
-      static-locations: classpath:/static/
-
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
