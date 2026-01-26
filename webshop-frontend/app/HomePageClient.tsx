@@ -1,6 +1,6 @@
 
 "use client";
-
+import { addToCart } from "./lib/cartApi";
 import { ShoppingCart, Heart, User, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -13,7 +13,7 @@ type Product = {
 };
 type BasketItem = Product & { quantity: number };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 function buildImageSrc(imageUrl?: string) {
   if (!imageUrl) return "";
 
@@ -136,8 +136,10 @@ export default function HomePageClient() {
             .then((data: Product[]) => setProducts(data))
             .catch((err) => setError(err.message));
     }, []);
+    
 
-    function addToBasket(product: Product) {
+
+  async function addToBasket(product: Product) {
   setBasket((prev) => {
     const found = prev.find((p) => p.id === product.id);
 
@@ -149,7 +151,18 @@ export default function HomePageClient() {
 
     return [...prev, { ...product, quantity: 1 }];
   });
+
+  try {
+    await addToCart(product.id, 1);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update backend cart");
+  }
 }
+
+
+
+  // 2️⃣ Update backend cart
 
 
     function increaseQty(id: number) {
