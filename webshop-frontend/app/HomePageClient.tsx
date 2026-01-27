@@ -24,7 +24,7 @@ function buildImageSrc(imageUrl?: string) {
 
   // backend returns path like /uploads/abc.png
   if (imageUrl.startsWith("/uploads/")) {
-    return `${API_BASE}/api${encodeURI(imageUrl)}`;
+    return `${API_BASE}${encodeURI(imageUrl)}`;
   }
 
   // other absolute paths
@@ -33,10 +33,8 @@ function buildImageSrc(imageUrl?: string) {
   }
 
   // backend returns only filename like abc.png
-  return `${API_BASE}/api/uploads/${encodeURIComponent(imageUrl)}`;
+  return `${API_BASE}/uploads/${encodeURIComponent(imageUrl)}`;
 }
-
-
 
 function getImageFileName(imageUrl?: string) {
     if (!imageUrl) return "";
