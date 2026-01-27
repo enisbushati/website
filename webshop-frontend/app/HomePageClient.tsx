@@ -1,5 +1,6 @@
-"use client";
 
+"use client";
+import { addToCart } from "./lib/cartApi";
 import { ShoppingCart, Heart, User, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -10,6 +11,7 @@ type Product = {
     price: number;
     imageUrl?: string;
 };
+type BasketItem = Product & { quantity: number };
 
 type CartItem = Product & {
     quantity: number;
@@ -18,22 +20,26 @@ type CartItem = Product & {
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
 function buildImageSrc(imageUrl?: string) {
-    if (!imageUrl) return "";
+  if (!imageUrl) return "";
 
-    // absolute URL from backend
-    if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-        return encodeURI(imageUrl);
-    }
+  // absolute URL from backend
+  if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+    return encodeURI(imageUrl);
+  }
 
-    // backend returns full path like /uploads/abc.png
-    if (imageUrl.startsWith("/")) {
-        return `${API_BASE}${encodeURI(imageUrl)}`;
-    }
+  // backend returns path like /uploads/abc.png
+  if (imageUrl.startsWith("/uploads/")) {
+    return `${API_BASE}${encodeURI(imageUrl)}`;
+  }
 
-    // backend returns only filename like abc.png -> assume /uploads/
-    return `${API_BASE}/uploads/${encodeURIComponent(imageUrl)}`;
+  // other absolute paths
+  if (imageUrl.startsWith("/")) {
+    return `${API_BASE}${encodeURI(imageUrl)}`;
+  }
+
+  // backend returns only filename like abc.png
+  return `${API_BASE}/uploads/${encodeURIComponent(imageUrl)}`;
 }
-
 
 function getImageFileName(imageUrl?: string) {
     if (!imageUrl) return "";
@@ -96,7 +102,23 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
             <p style={{ margin: "0 0 6px 0", opacity: 0.85 }}>{p.category}</p>
             <strong>{p.price} €</strong>
             <br />
-            <button onClick={() => onAdd(p)} style={{ marginTop: "8px" }}>
+            <button
+        onClick={() => onAdd(p)}
+        style={{
+        marginTop: "10px",
+        width: "100%",
+        padding: "12px",
+        backgroundColor: "#4CAF50",
+        color: "white",
+        border: "none",
+        borderRadius: "10px",
+        fontWeight: "bold",
+        fontSize: "15px",
+      cursor: "pointer",
+  }}
+>
+  
+
                 Add to basket
             </button>
         </div>
@@ -105,7 +127,11 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
 
 export default function HomePageClient() {
     const [products, setProducts] = useState<Product[]>([]);
+feature/cart-ui
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+    const [basket, setBasket] = useState<BasketItem[]>([]);
+main
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -117,7 +143,9 @@ export default function HomePageClient() {
             .then((data: Product[]) => setProducts(data))
             .catch((err) => setError(err.message));
     }, []);
+    
 
+ feature/cart-ui
     function addToCart(product: Product) {
         setCartItems((prev) => {
             const existing = prev.find((item) => item.id === product.id);
@@ -155,6 +183,59 @@ export default function HomePageClient() {
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const tax = subtotal * 0.19; // 19% VAT
     const total = subtotal + tax;
+
+
+  async function addToBasket(product: Product) {
+  setBasket((prev) => {
+    const found = prev.find((p) => p.id === product.id);
+
+    if (found) {
+      return prev.map((p) =>
+        p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+      );
+    }
+
+    return [...prev, { ...product, quantity: 1 }];
+  });
+
+  try {
+    await addToCart(product.id, 1);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update backend cart");
+  }
+}
+
+
+
+  //Update backend cart
+
+
+    function increaseQty(id: number) {
+  setBasket((prev) =>
+    prev.map((item) =>
+      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+    )
+  );
+}
+
+function decreaseQty(id: number) {
+  setBasket((prev) =>
+    prev
+      .map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+      )
+      .filter((item) => item.quantity > 0)
+  );
+}
+const [pressed, setPressed] = useState<string | null>(null);
+
+function press(key: string) {
+  setPressed(key);
+  window.setTimeout(() => setPressed(null), 120);
+}
+
+main
 
     if (error) return <h1>❌ {error}</h1>;
 
