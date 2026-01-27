@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.0.212:8080";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 if (!BASE_URL) {
   throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
 }
@@ -9,7 +9,7 @@ export async function api<T>(
 ): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
   ...options,
-  credentials: "include",   // 👈 ADD THIS LINE
+  credentials: "omit",   // 👈 ADD THIS LINE
   headers: {
     "Content-Type": "application/json",
     ...(options.headers || {}),
