@@ -1,8 +1,9 @@
 spring:
+  profiles:
+    active: local
+
   datasource:
     url: jdbc:mysql://localhost:3306/webshop?serverTimezone=UTC
-    username: root
-    password: DawoodMoosa4977
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -11,13 +12,13 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
 
-  web:
-    resources:
-      static-locations: file:/Users/utbnadham10/website/webshopapi/uploads/
+web:
+  resources:
+    static-locations: file:./webshopapi/uploads/
 
-  mvc:
-    static-path-pattern: /uploads/**
+mvc:
+  static-path-pattern: /uploads/**
 
 app:
-  upload-dir: /Users/utbnadahm10/website/webshopapi/uploads
+  upload-dir: ./webshopapi/uploads
 
