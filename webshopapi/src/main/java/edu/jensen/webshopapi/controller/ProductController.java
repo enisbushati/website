@@ -34,7 +34,7 @@ public class ProductController {
     }
 
     // POST product WITH image
-    @PostMapping(consumes = "multipart/form-data")
+    //@PostMapping(consumes = "multipart/form-data")
     public ProductDto postProduct(
             @RequestParam String name,
             @RequestParam String category,
@@ -57,6 +57,17 @@ public class ProductController {
         // Save via service
         Product saved = productService.postProduct(product);
 
+        return ProductDto.fromEntity(saved);
+    }
+
+    @PostMapping(consumes = "multipart/form-data")
+    public ProductDto postProduct1(
+            @RequestParam String name,
+            @RequestParam String category,
+            @RequestParam double price,
+            @RequestParam MultipartFile image
+    ) throws IOException {
+        Product saved = productService.persistProduct(name,category,price,image);
         return ProductDto.fromEntity(saved);
     }
 }
