@@ -127,11 +127,7 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
 
 export default function HomePageClient() {
     const [products, setProducts] = useState<Product[]>([]);
-feature/cart-ui
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
-    const [basket, setBasket] = useState<BasketItem[]>([]);
-main
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -143,9 +139,7 @@ main
             .then((data: Product[]) => setProducts(data))
             .catch((err) => setError(err.message));
     }, []);
-    
 
- feature/cart-ui
     function addToCart(product: Product) {
         setCartItems((prev) => {
             const existing = prev.find((item) => item.id === product.id);
@@ -183,59 +177,6 @@ main
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const tax = subtotal * 0.19; // 19% VAT
     const total = subtotal + tax;
-
-
-  async function addToBasket(product: Product) {
-  setBasket((prev) => {
-    const found = prev.find((p) => p.id === product.id);
-
-    if (found) {
-      return prev.map((p) =>
-        p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
-      );
-    }
-
-    return [...prev, { ...product, quantity: 1 }];
-  });
-
-  try {
-    await addToCart(product.id, 1);
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update backend cart");
-  }
-}
-
-
-
-  //Update backend cart
-
-
-    function increaseQty(id: number) {
-  setBasket((prev) =>
-    prev.map((item) =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-    )
-  );
-}
-
-function decreaseQty(id: number) {
-  setBasket((prev) =>
-    prev
-      .map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-      )
-      .filter((item) => item.quantity > 0)
-  );
-}
-const [pressed, setPressed] = useState<string | null>(null);
-
-function press(key: string) {
-  setPressed(key);
-  window.setTimeout(() => setPressed(null), 120);
-}
-
-main
 
     if (error) return <h1>❌ {error}</h1>;
 
