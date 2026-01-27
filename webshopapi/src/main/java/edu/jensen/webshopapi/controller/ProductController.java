@@ -13,9 +13,10 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.0.212:3000"})
 @RestController
 @RequestMapping("/products")
+
 public class ProductController {
 
     private final ProductService productService;
