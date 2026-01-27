@@ -24,7 +24,7 @@ public class ProductDto {
     // Convert Product entity → ProductDto
     public static ProductDto fromEntity(Product product) {
         return new ProductDto(
-                product.getId(),       // ✅ include id
+                product.getId(),
                 product.getName(),
                 product.getCategory(),
                 product.getPrice(),
