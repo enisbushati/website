@@ -37,7 +37,7 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
     return (
         <div
             style={{
-                border: "1px solid #ccc",
+                border: "1px solid #e0a5a5",
                 padding: "10px",
                 marginBottom: "10px",
                 width: "160px",
@@ -47,8 +47,8 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
         >
             <div
                 style={{
-                    width: "140px",
-                    height: "140px",
+                    width: "110px",
+                    height: "110px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -74,7 +74,7 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
                 )}
             </div>
 
-            <h3 style={{ margin: "6px 0", fontSize: "14px", fontWeight: 600 }}>{p.name}</h3>
+            <h3 style={{ margin: "6px 0", fontSize: "12px", fontWeight: 600 }}>{p.name}</h3>
             <p style={{ margin: "0 0 6px 0", opacity: 0.85, fontSize: "12px" }}>{p.category}</p>
             <strong style={{ fontSize: "13px" }}>{p.price} kr</strong>
 
@@ -84,7 +84,7 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
                     marginTop: "8px",
                     width: "100%",
                     padding: "10px",
-                    backgroundColor: "#4CAF50",
+                    backgroundColor: "#47aa8a",
                     color: "white",
                     border: "none",
                     borderRadius: "20px",
@@ -168,19 +168,19 @@ export default function HomePageClient() {
                 gap: "20px",
             }}
         >
-            {/* the bar on */}
+            {/* TOP BAR */}
             <div
                 style={{
                     width: "100%",
-                    maxWidth: "1100px",
+                    maxWidth: "1000px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
                     gap: "16px",
-                    padding: "12px 16px",
-                    borderRadius: "12px",
-                    border: "1px solid #1e363f",
-                    background: "#0b0f12",
+                    padding: "10px 12px",
+                    borderRadius: "10px",
+                    border: "1px solid #3f5d68",
+                    background: "#17363f",
                 }}
             >
                 <div style={{ color: "white", fontWeight: 700, fontSize: "18px" }}>Products</div>
@@ -192,10 +192,10 @@ export default function HomePageClient() {
                         display: "flex",
                         alignItems: "center",
                         gap: "10px",
-                        background: "#111827",
+                        background: "#0e515c",
                         border: "1px solid #1f2937",
                         borderRadius: "999px",
-                        padding: "10px 14px",
+                        padding: "10px 10px",
                     }}
                 >
                     <Search size={18} color="white" />
@@ -221,72 +221,86 @@ export default function HomePageClient() {
                 </div>
             </div>
 
-            {/* PRODUCTS */}
-            <div style={{ width: "100%", maxWidth: "1100px" }}>
-                <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "12px" }}>
-                    {filteredProducts.map((p) => (
-                        <ProductCard key={p.id} p={p} onAdd={addItemToCart} />
-                    ))}
-                </div>
-            </div>
+            {/* PRODUCTS + CART LAYOUT (keeps products centered, cart on right) */}
+            <div
+                style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    gap: "20px",
+                    maxWidth: "1400px",
+                }}
+            >
+                {/* LEFT SPACER: balances the cart so products stay centered */}
+                {cartItems.length > 0 && <div style={{ width: "400px" }} />}
 
-            {/* CART – hidden until product is added */}
-            {cartItems.length > 0 && (
-                <div style={{ width: "100%", maxWidth: "400px" }}>
-                    <div
-                        style={{
-                            background: "#7ac490",
-                            border: "1px solid #1e363f",
-                            borderRadius: "11px",
-                            padding: "12px",
-                        }}
-                    >
-                        <h2 style={{ margin: "0 0 20px 0", fontSize: "20px", fontWeight: 600 }}>
-                            🛒 Shopping Cart
-                        </h2>
-
-                        {cartItems.map((item) => (
-                            <div
-                                key={item.id}
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    padding: "10px",
-                                    borderBottom: "1px solid #f0f0f0",
-                                    gap: "16px",
-                                }}
-                            >
-                                <div style={{ flex: 1 }}>
-                                    <h4 style={{ margin: "0 0 4px 0", fontSize: "15px", fontWeight: 500 }}>
-                                        {item.name}
-                                    </h4>
-                                    <p style={{ margin: 0, fontSize: "13px", color: "#666" }}>{item.category}</p>
-                                </div>
-
-                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>−</button>
-                                    <span>{item.quantity}</span>
-                                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                                </div>
-
-                                <strong>{(item.price * item.quantity).toFixed(2)} kr </strong>
-
-                                <button onClick={() => removeFromCart(item.id)}>✕</button>
-
-                            </div>
+                {/* PRODUCTS */}
+                <div style={{ width: "100%", maxWidth: "1100px" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "12px" }}>
+                        {filteredProducts.map((p) => (
+                            <ProductCard key={p.id} p={p} onAdd={addItemToCart} />
                         ))}
-
-                        <div style={{ marginTop: "16px", fontWeight: 700 }}>
-                            Total: {subtotal.toFixed(2)} kr
-                        </div>
-
-                        <button onClick={clearCart} style={{ marginTop: "12px" }}>
-                            Clear Cart
-                        </button>
                     </div>
                 </div>
-            )}
+
+                {/* CART – shown on the right, in the layout flow */}
+                {cartItems.length > 0 && (
+                    <div style={{ width: "400px" }}>
+                        <div
+                            style={{
+                                background: "#0e515c",
+                                border: "1px solid #1e363f",
+                                borderRadius: "11px",
+                                padding: "12px",
+                            }}
+                        >
+                            <h2 style={{ margin: "0 0 20px 0", fontSize: "20px", fontWeight: 600 }}>
+                                🛒 Shopping Cart
+                            </h2>
+
+                            {cartItems.map((item) => (
+                                <div
+                                    key={item.id}
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "10px",
+                                        borderBottom: "1px solid #f0f0f0",
+                                        gap: "16px",
+                                    }}
+                                >
+                                    <div style={{ flex: 1 }}>
+                                        <h4 style={{ margin: "0 0 4px 0", fontSize: "15px", fontWeight: 500 }}>
+                                            {item.name}
+                                        </h4>
+                                        <p style={{ margin: 0, fontSize: "13px", color: "#666" }}>{item.category}</p>
+                                    </div>
+
+                                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>−</button>
+                                        <span>{item.quantity}</span>
+                                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                                    </div>
+
+                                    <strong>{(item.price * item.quantity).toFixed(2)} kr</strong>
+
+                                    <button onClick={() => removeFromCart(item.id)}>✕</button>
+                                </div>
+                            ))}
+
+                            <div style={{ marginTop: "16px", fontWeight: 700 }}>
+                                Total: {subtotal.toFixed(2)} kr
+                            </div>
+
+                            <button onClick={clearCart} style={{ marginTop: "12px" }}>
+                                Clear Cart
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </main>
     );
 }
