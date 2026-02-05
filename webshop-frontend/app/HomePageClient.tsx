@@ -30,7 +30,17 @@ function getImageFileName(imageUrl?: string) {
   return decodeURIComponent(parts[parts.length - 1] || "");
 }
 
-function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) {
+function ProductCard({
+  p,
+  onAdd,
+  isLiked,
+  onToggleLike,
+}: {
+  p: Product;
+  onAdd: (p: Product) => void;
+  isLiked: boolean;
+  onToggleLike: (productId: number) => void;
+}) {
   const [imageFailed, setImageFailed] = useState(false);
   const imgSrc = buildImageSrc(p.imageUrl);
   const fileName = getImageFileName(p.imageUrl);
@@ -57,8 +67,31 @@ function ProductCard({ p, onAdd }: { p: Product; onAdd: (p: Product) => void }) 
           background: "#ffffff",
           overflow: "hidden",
           borderRadius: "10px",
+          position: "relative",
         }}
       >
+        <button
+          onClick={() => onToggleLike(p.id)}
+          aria-label={isLiked ? "Remove like" : "Like product"}
+          title={isLiked ? "Unlike" : "Like"}
+          style={{
+            position: "absolute",
+            top: "6px",
+            right: "6px",
+            width: "26px",
+            height: "26px",
+            borderRadius: "999px",
+            border: "none",
+            background: "rgba(255, 255, 255, 0.9)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+          }}
+        >
+          <Heart size={14} color={isLiked ? "#e11d48" : "#6b7280"} fill={isLiked ? "#e11d48" : "none"} />
+        </button>
         {p.imageUrl && !imageFailed ? (
           <img
             src={imgSrc}
@@ -105,6 +138,7 @@ export default function HomePageClient() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
 
   // Dynamic categories
   const [categories, setCategories] = useState<string[]>([]);
@@ -177,6 +211,18 @@ export default function HomePageClient() {
 
   function clearCart() {
     setCartItems([]);
+  }
+
+  function toggleLike(productId: number) {
+    setLikedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(productId)) {
+        next.delete(productId);
+      } else {
+        next.add(productId);
+      }
+      return next;
+    });
   }
 
   const filteredProducts = useMemo(() => {
@@ -320,7 +366,13 @@ export default function HomePageClient() {
         <div style={{ width: "100%", maxWidth: "1100px" }}>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "12px" }}>
             {filteredProducts.map((p) => (
-              <ProductCard key={p.id} p={p} onAdd={addItemToCart} />
+              <ProductCard
+                key={p.id}
+                p={p}
+                onAdd={addItemToCart}
+                isLiked={likedIds.has(p.id)}
+                onToggleLike={toggleLike}
+              />
             ))}
           </div>
         </div>
