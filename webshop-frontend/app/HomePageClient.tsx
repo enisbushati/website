@@ -179,8 +179,8 @@ export default function HomePageClient() {
                     gap: "16px",
                     padding: "10px 12px",
                     borderRadius: "10px",
-                    border: "1px solid #3f5d68",
-                    background: "#17363f",
+                    border: "1px solid #3e5f6b",
+                    background: "#78cce6",
                 }}
             >
                 <div style={{ color: "white", fontWeight: 700, fontSize: "18px" }}>Products</div>
@@ -192,8 +192,8 @@ export default function HomePageClient() {
                         display: "flex",
                         alignItems: "center",
                         gap: "10px",
-                        background: "#0e515c",
-                        border: "1px solid #1f2937",
+                        background: "#4b8597",
+                        border: "1px solid #78cce6",
                         borderRadius: "999px",
                         padding: "10px 10px",
                     }}
@@ -249,8 +249,8 @@ export default function HomePageClient() {
                     <div style={{ width: "400px" }}>
                         <div
                             style={{
-                                background: "#0e515c",
-                                border: "1px solid #1e363f",
+                                background: "#4b8597",
+                                border: "1px solid #4b8597",
                                 borderRadius: "11px",
                                 padding: "12px",
                             }}
