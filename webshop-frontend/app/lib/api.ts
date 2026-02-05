@@ -9,7 +9,7 @@ export async function api<T>(
 ): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
   ...options,
-  credentials: "omit",   // 👈 ADD THIS LINE
+  credentials: "omit",   
   headers: {
     "Content-Type": "application/json",
     ...(options.headers || {}),

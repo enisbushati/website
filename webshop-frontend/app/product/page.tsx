@@ -26,10 +26,10 @@ export default function AddProduct() {
         });
 
         if (response.ok){
-            setMessage("✅ Product saved successfully");
+            setMessage(" Product saved successfully");
         }
         else{
-            setMessage("❌ Failed to save product");
+            setMessage("Failed to save product");
         }
     }
 
