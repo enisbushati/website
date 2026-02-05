@@ -33,6 +33,21 @@ public class ProductController {
                 .map(ProductDto::fromEntity)
                 .collect(Collectors.toList());
     }
+    // GET products by category
+    @GetMapping("/category/{category}")
+    public List<ProductDto> getProductsByCategory(@PathVariable String category) {
+        return productService.getProductsByCategory(category)
+                .stream()
+                .map(ProductDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+    // GET all categories
+    @GetMapping("/categories")
+    public List<String> getCategories() {
+        return productService.getCategories();
+    }
+
+
 
     // POST product WITH image
     //@PostMapping(consumes = "multipart/form-data")

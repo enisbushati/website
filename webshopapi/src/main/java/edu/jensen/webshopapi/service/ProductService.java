@@ -24,12 +24,22 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<Product> getProductsByCategory(String category) {
+        return productRepository.findByCategoryIgnoreCase(category);
+    }
+
+    // ADD THIS METHOD (for dynamic category buttons)
+    public List<String> getCategories() {
+        return productRepository.findDistinctCategories();
+    }
+
     public Product postProduct(Product product) {
         return productRepository.save(product);
     }
 
     public Product persistProduct(String name, String category, double price, MultipartFile image)
-    throws IOException {
+            throws IOException {
+
         String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
         Path path = Paths.get("uploads/" + fileName);
         Files.write(path, image.getBytes());
@@ -39,6 +49,8 @@ public class ProductService {
         product.setCategory(category);
         product.setPrice(price);
         product.setImageUrl("/uploads/" + fileName);
+
         return productRepository.save(product);
     }
 }
+
