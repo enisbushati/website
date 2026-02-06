@@ -196,8 +196,12 @@ export default function HomePageClient() {
   }
 
   function removeFromCart(productId: number) {
+    const confirmed = window.confirm("Are you sure you want to remove this item?");
+    if (!confirmed) return;
+
     setCartItems((prev) => prev.filter((item) => item.id !== productId));
-  }
+}
+
 
   function updateQuantity(productId: number, quantity: number) {
     if (quantity <= 0) {
