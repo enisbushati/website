@@ -40,7 +40,7 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    // 👉 THIS METHOD MUST EXIST
+
     public Double getUnitPrice() {
     return unitPrice;
 }

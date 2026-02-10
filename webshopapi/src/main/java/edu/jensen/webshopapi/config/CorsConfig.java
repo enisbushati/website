@@ -15,17 +15,17 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ ALLOW FRONTEND ORIGINS
+
         config.setAllowedOriginPatterns(List.of(
             "http://localhost:3000",
             "http://192.168.*.*:3000",
             "http://10.*.*.*:3000"
         ));
 
-        // ✅ REQUIRED FOR COOKIES / SESSION
+
         config.setAllowCredentials(true);
 
-        // ✅ ALLOW EVERYTHING ELSE
+
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 

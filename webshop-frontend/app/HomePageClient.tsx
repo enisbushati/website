@@ -30,6 +30,7 @@ function getImageFileName(imageUrl?: string) {
   return decodeURIComponent(parts[parts.length - 1] || "");
 }
 
+
 function ProductCard({
   p,
   onAdd,
@@ -40,8 +41,12 @@ function ProductCard({
   onAdd: (p: Product) => void;
   isLiked: boolean;
   onToggleLike: (productId: number) => void;
+
 }) {
+
+
   const [imageFailed, setImageFailed] = useState(false);
+
   const imgSrc = buildImageSrc(p.imageUrl);
   const fileName = getImageFileName(p.imageUrl);
 
@@ -67,7 +72,7 @@ function ProductCard({
           background: "#ffffff",
           overflow: "hidden",
           borderRadius: "10px",
-          position: "relative",
+          position: "relative"
         }}
       >
         <button
@@ -209,10 +214,6 @@ export default function HomePageClient() {
     );
   }
 
-  function clearCart() {
-    setCartItems([]);
-  }
-
   function toggleLike(productId: number) {
     setLikedIds((prev) => {
       const next = new Set(prev);
@@ -225,6 +226,11 @@ export default function HomePageClient() {
     });
   }
 
+  function clearCart() {
+    setCartItems([]);
+  }
+
+
   const filteredProducts = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return products;
@@ -236,16 +242,16 @@ export default function HomePageClient() {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const filterBtnStyle = (active: boolean) =>
-    ({
-      padding: "10px 14px",
-      borderRadius: "999px",
-      border: "1px solid #3e5f6b",
-      background: active ? "#4b8597" : "white",
-      color: active ? "white" : "#123",
-      cursor: "pointer",
-      fontWeight: 700,
-      fontSize: "12px",
-    } as const);
+  ({
+    padding: "10px 14px",
+    borderRadius: "999px",
+    border: "1px solid #3e5f6b",
+    background: active ? "#4b8597" : "white",
+    color: active ? "white" : "#123",
+    cursor: "pointer",
+    fontWeight: 700,
+    fontSize: "12px",
+  } as const);
 
   if (error) return <h1>X {error}</h1>;
 
@@ -374,6 +380,7 @@ export default function HomePageClient() {
                 onToggleLike={toggleLike}
               />
             ))}
+
           </div>
         </div>
 
